@@ -400,9 +400,7 @@ namespace Eos.Services
                         break;
 
                     case RequirementType.SKILL:
-#if SPACEPOPE
                     case RequirementType.SKILLOR:
-#endif
                         tmpItem.Param1Skill = CreateRef<Skill>(preRequTable2da[i].AsInteger("ReqParam1"));
                         break;
 
@@ -413,13 +411,11 @@ namespace Eos.Services
                     case RequirementType.ARCSPELL:
                     case RequirementType.SPELL:
                     case RequirementType.BAB:
-#if SPACEPOPE
                     case RequirementType.ARCCAST:
                     case RequirementType.DIVCAST:
                     case RequirementType.DIVSPELL:
                     case RequirementType.PANTHEONOR:
                     case RequirementType.DEITYOR:
-#endif
                         tmpItem.Param1Int = preRequTable2da[i].AsInteger("ReqParam1");
                         break;
 
@@ -2466,6 +2462,18 @@ namespace Eos.Services
                 tmpPolymorph.MergeWeapon = polymorph2da[i].AsBoolean("MergeW");
                 tmpPolymorph.MergeAccessories = polymorph2da[i].AsBoolean("MergeI");
                 tmpPolymorph.MergeArmor = polymorph2da[i].AsBoolean("MergeA");
+                tmpPolymorph.Scale = (float?)polymorph2da[i].AsFloat("SCALE");
+                tmpPolymorph.Perspace = (float?)polymorph2da[i].AsFloat("PERSPACE");
+                tmpPolymorph.Creperspace = (float?)polymorph2da[i].AsFloat("CREPERSPACE");
+                tmpPolymorph.SizeCategory = polymorph2da[i].AsInteger("SIZECATEGORY");
+                tmpPolymorph.Footsteptype = polymorph2da[i].AsInteger("FOOTSTEPTYPE");
+                tmpPolymorph.HitDist = (float?)polymorph2da[i].AsFloat("HITDIST");
+                tmpPolymorph.PrefAtckDist = (float?)polymorph2da[i].AsFloat("PREFATCKDIST");
+                tmpPolymorph.WingModel = polymorph2da[i].AsInteger("WINGMODEL");
+                tmpPolymorph.TailModel = polymorph2da[i].AsInteger("TAILMODEL");
+                tmpPolymorph.AppearanceFemale = CreateRef<Appearance>(polymorph2da[i].AsInteger("AppearanceTypeFemale"));
+                tmpPolymorph.SoundSetFemale = polymorph2da[i].AsInteger("SoundSetFemale");
+                tmpPolymorph.PortraitFemale = polymorph2da[i].AsString("PortraitFemale");                
 
                 Standard.Polymorphs.Add(tmpPolymorph);
             }
@@ -3156,9 +3164,7 @@ namespace Eos.Services
                             break;
 
                         case RequirementType.SKILL:
-#if SPACEPOPE
                         case RequirementType.SKILLOR:
-#endif
                             item.Param1Skill = SolveInstance(item.Param1Skill, Standard.Skills);
                             break;
                     }

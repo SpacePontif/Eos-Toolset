@@ -79,6 +79,23 @@ namespace Eos.Models
         public bool MergeWeapon { get; set; }
         public bool MergeAccessories { get; set; }
         public bool MergeArmor { get; set; }
+        
+        public float? Scale { get; set; }
+        public float? Perspace { get; set; }
+        public float? Creperspace { get; set; }
+        public int? SizeCategory { get; set; }
+        public int? Footsteptype { get; set; }
+        public float? HitDist { get; set; }
+        public float? PrefAtckDist { get; set; }
+        public int? WingModel { get; set; }
+        public int? TailModel { get; set; }
+        public Appearance? AppearanceFemale
+        {
+            get { return _appearance; }
+            set { Set(ref _appearance, value); }
+        }
+        public int? SoundSetFemale { get; set; }
+        public String? PortraitFemale { get; set; }
 
         public override String GetLabel()
         {
@@ -125,6 +142,18 @@ namespace Eos.Models
             this.MergeWeapon = json["MergeWeapon"]?.GetValue<bool>() ?? false;
             this.MergeAccessories = json["MergeAccessories"]?.GetValue<bool>() ?? false;
             this.MergeArmor = json["MergeArmor"]?.GetValue<bool>() ?? false;
+            this.Scale = json["SCALE"]?.GetValue<float>();
+            this.Perspace = json["PERSPACE"]?.GetValue<float>();
+            this.Creperspace = json["CREPERSPACE"]?.GetValue<float>();
+            this.SizeCategory = json["SIZECATEGORY"]?.GetValue<int>();
+            this.Footsteptype = json["FOOTSTEPTYPE"]?.GetValue<int>();
+            this.HitDist = json["HITDIST"]?.GetValue<float>();
+            this.PrefAtckDist = json["PREFATCKDIST"]?.GetValue<float>();
+            this.WingModel = json["WINGMODEL"]?.GetValue<int>();
+            this.TailModel = json["TAILMODEL"]?.GetValue<int>();
+            this.AppearanceFemale = CreateRefFromJson<Appearance>(json["AppearanceTypeFemale"]?.AsObject());
+            this.SoundSetFemale = json["SoundSetFemale"]?.GetValue<int>();
+            this.PortraitFemale = json["PortraitFemale"]?.GetValue<String>() ?? "";
         }
 
         public override JsonObject ToJson()
@@ -151,6 +180,18 @@ namespace Eos.Models
             polymorphJson.Add("MergeWeapon", this.MergeWeapon);
             polymorphJson.Add("MergeAccessories", this.MergeAccessories);
             polymorphJson.Add("MergeArmor", this.MergeArmor);
+            polymorphJson.Add("SCALE", this.Scale);
+            polymorphJson.Add("PERSPACE", this.Perspace);
+            polymorphJson.Add("CREPERSPACE", this.Creperspace);
+            polymorphJson.Add("SIZECATEGORY", this.SizeCategory);
+            polymorphJson.Add("FOOTSTEPTYPE", this.Footsteptype);
+            polymorphJson.Add("HITDIST", this.HitDist);
+            polymorphJson.Add("PREFATCKDIST", this.PrefAtckDist);
+            polymorphJson.Add("WINGMODEL", this.WingModel);
+            polymorphJson.Add("TAILMODEL", this.TailModel);
+            polymorphJson.Add("AppearanceTypeFemale", CreateJsonRef(this.AppearanceFemale));
+            polymorphJson.Add("SoundSetFemale", this.SoundSetFemale);
+            polymorphJson.Add("PortraitFemale", this.PortraitFemale);
 
             return polymorphJson;
         }

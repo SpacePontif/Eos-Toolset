@@ -60,6 +60,14 @@
               <RowDefinition Height="auto" MinHeight="25"/>
               <RowDefinition Height="auto" MinHeight="25"/>
               <RowDefinition Height="auto" MinHeight="25"/>
+              <RowDefinition Height="auto" MinHeight="25"/>
+              <RowDefinition Height="auto" MinHeight="25"/>
+              <RowDefinition Height="auto" MinHeight="25"/>
+              <RowDefinition Height="auto" MinHeight="25"/>
+              <RowDefinition Height="auto" MinHeight="25"/>
+              <RowDefinition Height="auto" MinHeight="25"/>
+              <RowDefinition Height="auto" MinHeight="25"/>
+              <RowDefinition Height="auto" MinHeight="25"/>
               <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -146,6 +154,45 @@
 
             <TextBlock Text="Spell 3" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="20" Grid.Column="0"/>
             <uc:SpellComboBox SelectedValue="{Binding Data.Spell3}" Grid.Row="20" Grid.Column="1"/>
+
+            <!-- Additional Polymorph Fields -->
+             <TextBlock Text="CD specific fields" Margin="0,0,0,10" HorizontalAlignment="Center" Grid.Row="22" Grid.Column="0" FontWeight="Bold" FontSize="16" Grid.ColumnSpan="4"/>
+             
+            <TextBlock Text="Scale" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="23" Grid.Column="0"/>
+            <NumericUpDown Value="{Binding Data.Scale}" Grid.Row="23" Grid.Column="1" Increment="0.01"/>
+
+            <TextBlock Text="Personal Space" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="23" Grid.Column="2"/>
+            <NumericUpDown Value="{Binding Data.Perspace}" Grid.Row="23" Grid.Column="3" Increment="0.01"/>
+
+            <TextBlock Text="Creature Personal Space" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="24" Grid.Column="0"/>
+            <NumericUpDown Value="{Binding Data.Creperspace}" Grid.Row="24" Grid.Column="1" Increment="0.01"/>
+
+            <TextBlock Text="Size Category" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="24" Grid.Column="2"/>
+            <NumericUpDown Value="{Binding Data.SizeCategory}" Grid.Row="24" Grid.Column="3" Increment="1"/>
+
+            <TextBlock Text="Footstep Type" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="25" Grid.Column="0"/>
+            <NumericUpDown Value="{Binding Data.Footsteptype}" Grid.Row="25" Grid.Column="1" Increment="1"/>
+
+            <TextBlock Text="Hit Distance" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="25" Grid.Column="2"/>
+            <NumericUpDown Value="{Binding Data.HitDist}" Grid.Row="25" Grid.Column="3" Increment="0.01"/>
+
+            <TextBlock Text="Preferred Attack Distance" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="26" Grid.Column="0"/>
+            <NumericUpDown Value="{Binding Data.PrefAtckDist}" Grid.Row="26" Grid.Column="1" Increment="0.01"/>
+
+            <TextBlock Text="Wing Model" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="26" Grid.Column="2"/>
+            <NumericUpDown Value="{Binding Data.WingModel}" Grid.Row="26" Grid.Column="3" Increment="1"/>
+
+            <TextBlock Text="Tail Model" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="27" Grid.Column="0"/>
+            <NumericUpDown Value="{Binding Data.TailModel}" Grid.Row="27" Grid.Column="1" Increment="1"/>
+
+            <TextBlock Text="Appearance Female" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="27" Grid.Column="2"/>
+            <uc:AppearanceComboBox SelectedValue="{Binding Data.AppearanceFemale}" IsNullable="True" Grid.Row="27" Grid.Column="3"/>
+
+            <TextBlock Text="SoundSet Female" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="28" Grid.Column="0"/>
+            <NumericUpDown Value="{Binding Data.SoundSetFemale}" Grid.Row="28" Grid.Column="1" Increment="1"/>
+
+            <TextBlock Text="Portrait Female" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="28" Grid.Column="2"/>
+            <TextBox Text="{Binding Data.PortraitFemale}" Grid.Row="28" Grid.Column="3"/>
           </Grid>
         </Border>
       </ScrollViewer>

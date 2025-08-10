@@ -25,7 +25,6 @@ using System.Xml.Linq;
 namespace Eos.Services
 {
     public delegate void ImportPreviewEventHandler(object sender, RepositoryCollection importedData, ref bool continueImport);
-
     public class ImportService
     {
         private delegate T ImportTableDelegate<T>(string tableName, Guid guid) where T : BaseModel;
@@ -320,6 +319,8 @@ namespace Eos.Services
                     tmpRace.SkillPointModifierAbility = Enum.Parse<AbilityType>(races2da[i].AsString("SkillPointModifierAbility", "INT") ?? "INT", true);
                     tmpRace.FavoredEnemyFeat = CreateRef<Feat>(races2da[i].AsInteger("FavoredEnemyFeat", null));
                     tmpRace.Feats = GetOrImportTable(races2da[i].AsString("FeatsTable"), ImportRacialFeatsTable);
+                    tmpRace.ParentRace = races2da[i].AsInteger("ParentRace");
+                    tmpRace.SubraceField = races2da[i].AsString("SubraceField", "");
 
                     _importCollection.Races.Add(tmpRace);
                 }
@@ -546,9 +547,7 @@ namespace Eos.Services
                         break;
 
                     case RequirementType.SKILL:
-#if SPACEPOPE
                     case RequirementType.SKILLOR:
-#endif
                         tmpItem.Param1Skill = CreateRef<Skill>(preRequTable2da[i].AsInteger("ReqParam1"));
                         break;
 
@@ -559,13 +558,11 @@ namespace Eos.Services
                     case RequirementType.ARCSPELL:
                     case RequirementType.SPELL:
                     case RequirementType.BAB:
-#if SPACEPOPE
                     case RequirementType.ARCCAST:
                     case RequirementType.DIVCAST:
                     case RequirementType.DIVSPELL:
                     case RequirementType.PANTHEONOR:
                     case RequirementType.DEITYOR:
-#endif
                         tmpItem.Param1Int = preRequTable2da[i].AsInteger("ReqParam1");
                         break;
 
@@ -633,6 +630,7 @@ namespace Eos.Services
                     if (!SetText(tmpClass.Name, classes2da[i].AsInteger("Name"))) continue;
                     SetText(tmpClass.Abbreviation, classes2da[i].AsInteger("Short", null));
                     SetText(tmpClass.NamePlural, classes2da[i].AsInteger("Plural"));
+                    SetText(tmpClass.MediumName, classes2da[i].AsInteger("MediumName"));
                     SetText(tmpClass.Description, classes2da[i].AsInteger("Description"));
 
                     tmpClass.Icon = AddIconResource(classes2da[i].AsString("Icon"));
@@ -938,7 +936,8 @@ namespace Eos.Services
                     tmpSpell.TargetSizeX = spells2da[i].AsFloat("TargetSizeX", null);
                     tmpSpell.TargetSizeY = spells2da[i].AsFloat("TargetSizeY", null);
                     tmpSpell.TargetingFlags = (TargetFlag?)spells2da[i].AsInteger("TargetFlags", null) ?? (TargetFlag)0;
-
+                    tmpSpell.ShapeMastery = spells2da[i].AsBoolean("ShapeMastery");
+                    tmpSpell.SpellDescriptors = (SpellDescriptors)(spells2da[i].AsInteger("SpellDescriptors") ?? 0);
 
                     for (int j = 0; j < spells2da.Columns.Count; j++)
                     {
@@ -1813,6 +1812,18 @@ namespace Eos.Services
                     tmpPolymorph.MergeWeapon = polymorph2da[i].AsBoolean("MergeW");
                     tmpPolymorph.MergeAccessories = polymorph2da[i].AsBoolean("MergeI");
                     tmpPolymorph.MergeArmor = polymorph2da[i].AsBoolean("MergeA");
+                    tmpPolymorph.Scale = (float?)polymorph2da[i].AsFloat("SCALE");
+                    tmpPolymorph.Perspace = (float?)polymorph2da[i].AsFloat("PERSPACE");
+                    tmpPolymorph.Creperspace = (float?)polymorph2da[i].AsFloat("CREPERSPACE");
+                    tmpPolymorph.SizeCategory = polymorph2da[i].AsInteger("SIZECATEGORY");
+                    tmpPolymorph.Footsteptype = polymorph2da[i].AsInteger("FOOTSTEPTYPE");
+                    tmpPolymorph.HitDist = (float?)polymorph2da[i].AsFloat("HITDIST");
+                    tmpPolymorph.PrefAtckDist = (float?)polymorph2da[i].AsFloat("PREFATCKDIST");
+                    tmpPolymorph.WingModel = polymorph2da[i].AsInteger("WINGMODEL");
+                    tmpPolymorph.TailModel = polymorph2da[i].AsInteger("TAILMODEL");
+                    tmpPolymorph.AppearanceFemale = CreateRef<Appearance>(polymorph2da[i].AsInteger("AppearanceTypeFemale"));
+                    tmpPolymorph.SoundSetFemale = polymorph2da[i].AsInteger("SoundSetFemale");
+                    tmpPolymorph.PortraitFemale = polymorph2da[i].AsString("PortraitFemale");        
 
                     _importCollection.Polymorphs.Add(tmpPolymorph);
                 }
@@ -2283,9 +2294,7 @@ namespace Eos.Services
                             break;
 
                         case RequirementType.SKILL:
-#if SPACEPOPE
                         case RequirementType.SKILLOR:
-#endif
                             item.Param1Skill = SolveInstance(item.Param1Skill);
                             break;
                     }

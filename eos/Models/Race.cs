@@ -1,15 +1,16 @@
-﻿using Eos.Models.Tables;
-using Eos.Nwn.Tlk;
-using Eos.Repositories;
-using Eos.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
+﻿
+    using Eos.Models.Tables;
+    using Eos.Nwn.Tlk;
+    using Eos.Repositories;
+    using Eos.Types;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Text.Json.Nodes;
+    using System.Threading.Tasks;
 
-using static Eos.Models.JsonUtils;
+    using static Eos.Models.JsonUtils;
 
 namespace Eos.Models
 {
@@ -21,6 +22,8 @@ namespace Eos.Models
         private Feat? _favoredEnemyFeat;
         private RacialFeatsTable? _feats;
 
+        public int? ParentRace { get; set; }
+        public string? SubraceField { get; set; }
         public TLKStringSet Name { get; set; } = new TLKStringSet();
         public TLKStringSet NamePlural { get; set; } = new TLKStringSet();
         public TLKStringSet Adjective { get; set; } = new TLKStringSet();
@@ -136,6 +139,8 @@ namespace Eos.Models
             raceJson.Add("SkillPointModifierAbility", EnumToJson(this.SkillPointModifierAbility));
             raceJson.Add("FavoredEnemyFeat", CreateJsonRef(this.FavoredEnemyFeat));
             raceJson.Add("Feats", CreateJsonRef(this.Feats));
+            raceJson.Add("ParentRace", this.ParentRace);
+            raceJson.Add("SubraceField", this.SubraceField);
 
             return raceJson;
         }
@@ -172,6 +177,8 @@ namespace Eos.Models
             this.SkillPointModifierAbility = JsonToEnum<AbilityType>(json["SkillPointModifierAbility"]) ?? AbilityType.INT;
             this.FavoredEnemyFeat = CreateRefFromJson<Feat>(json["FavoredEnemyFeat"]?.AsObject());
             this.Feats = CreateRefFromJson<RacialFeatsTable>(json["Feats"]?.AsObject());
+            this.ParentRace = json["ParentRace"]?.GetValue<int?>();
+            this.SubraceField = json["SubraceField"]?.GetValue<String>();
         }
     }
 }

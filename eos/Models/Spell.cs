@@ -148,6 +148,9 @@ namespace Eos.Models
         public double? TargetSizeY { get; set; }
         public TargetFlag TargetingFlags { get; set; } = (TargetFlag)0;
 
+        public bool ShapeMastery { get; set; }
+        public SpellDescriptors? SpellDescriptors { get; set; }
+
         protected override void Initialize()
         {
             base.Initialize();
@@ -242,6 +245,9 @@ namespace Eos.Models
             this.TargetSizeX = json["TargetSizeX"]?.GetValue<double>();
             this.TargetSizeY = json["TargetSizeY"]?.GetValue<double>();
             this.TargetingFlags = JsonToEnum<TargetFlag>(json["TargetingFlags"]) ?? (TargetFlag)0;
+            this.ShapeMastery = json["ShapeMastery"]?.GetValue<bool>() ?? true;
+            var desc = JsonToEnum<SpellDescriptors>(json["SpellDescriptors"]);
+            this.SpellDescriptors = json["SpellDescriptors"] is null ? null : desc;
         }
 
         public override JsonObject ToJson()
@@ -299,6 +305,8 @@ namespace Eos.Models
             spellJson.Add("TargetSizeX", this.TargetSizeX);
             spellJson.Add("TargetSizeY", this.TargetSizeY);
             spellJson.Add("TargetingFlags", EnumToJson(this.TargetingFlags));
+            spellJson.Add("ShapeMastery", this.ShapeMastery);
+            spellJson.Add("SpellDescriptors", this.SpellDescriptors.HasValue ? EnumToJson(this.SpellDescriptors.Value) : null);
 
             return spellJson;
         }

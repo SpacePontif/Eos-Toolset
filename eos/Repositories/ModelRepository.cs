@@ -107,7 +107,15 @@ namespace Eos.Repositories
 
                 modelLookup.Add(model.ID, model);
                 if (model.Index != null && model.Index != -1)
-                    modelIndexLookup.Add(model.Index ?? 0, model);
+                {
+                    int idx = model.Index ?? 0;
+                    if (modelIndexLookup.ContainsKey(idx))
+                    {
+                        Log.Error($"Duplicate model index detected in {typeof(T).Name}: Index={idx}, ID={model.ID}, Label={model.GetLabel()} - Skipping this entry.");
+                        return;
+                    }
+                    modelIndexLookup.Add(idx, model);
+                }
             }
         }
 

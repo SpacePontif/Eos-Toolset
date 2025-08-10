@@ -68,6 +68,7 @@
                 <RowDefinition Height="25" MinHeight="25"/>
                 <RowDefinition Height="25" MinHeight="25"/>
                 <RowDefinition Height="25" MinHeight="25"/>
+                <RowDefinition Height="25" MinHeight="25"/>
                 <RowDefinition Height="auto" MinHeight="25"/>
                 <RowDefinition Height="*"/>
               </Grid.RowDefinitions>
@@ -81,16 +82,20 @@
               <TextBlock Text="Name (Plural)" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="2" Grid.Column="0"/>
               <uc:TLKTextbox TLKStrings="{Binding Data.NamePlural}" TLKLanguage="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentLanguage}" Gender="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentGender}" Grid.Row="2" Grid.Column="1"/>
 
-              <!--Abbreviation-->
-              <TextBlock Text="Abbreviation" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="0"/>
-              <uc:TLKTextbox TLKStrings="{Binding Data.Abbreviation}" TLKLanguage="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentLanguage}" Gender="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentGender}" Grid.Row="3" Grid.Column="1"/>
+              <!--Name (Medium)-->
+              <TextBlock Text="Name (Medium)" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="0"/>
+              <uc:TLKTextbox TLKStrings="{Binding Data.MediumName}" TLKLanguage="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentLanguage}" Gender="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentGender}" Grid.Row="3" Grid.Column="1"/>
 
-              <TextBlock Text="Hint" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="4" Grid.Column="0"/>
-              <TextBox Text="{Binding Data.Hint}" Grid.Row="4" Grid.Column="1"/>
+              <!--Abbreviation-->
+              <TextBlock Text="Abbreviation" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="4" Grid.Column="0"/>
+              <uc:TLKTextbox TLKStrings="{Binding Data.Abbreviation}" TLKLanguage="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentLanguage}" Gender="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentGender}" Grid.Row="4" Grid.Column="1"/>
+
+              <TextBlock Text="Hint" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="5" Grid.Column="0"/>
+              <TextBox Text="{Binding Data.Hint}" Grid.Row="5" Grid.Column="1"/>
 
               <!--Description-->
-              <TextBlock Text="Description" HorizontalAlignment="Right" Margin="0,3,5,0" Grid.Row="5" Grid.Column="0"/>
-              <uc:TLKTextbox Grid.Row="5" Grid.Column="1" TLKStrings="{Binding Data.Description}" TLKLanguage="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentLanguage}" Gender="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentGender}" AcceptsReturn="True" Height="120" IsReadonly="{Binding Data.IsReadonly}"/>
+              <TextBlock Text="Description" HorizontalAlignment="Right" Margin="0,3,5,0" Grid.Row="6" Grid.Column="0"/>
+              <uc:TLKTextbox Grid.Row="6" Grid.Column="1" TLKStrings="{Binding Data.Description}" TLKLanguage="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentLanguage}" Gender="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentGender}" AcceptsReturn="True" Height="120" IsReadonly="{Binding Data.IsReadonly}"/>
             </Grid>
 
             <!--Icon-->

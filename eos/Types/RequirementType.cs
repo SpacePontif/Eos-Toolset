@@ -22,13 +22,11 @@ namespace Eos.Types
         SKILL,
         SPELL,
         VAR,
-#if SPACEPOPE
         ARCCAST,
         DIVCAST,
         DIVSPELL,
         PANTHEONOR,
         DEITYOR,
         SKILLOR,
-#endif
     }
 }

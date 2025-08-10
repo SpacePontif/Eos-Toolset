@@ -183,6 +183,7 @@ namespace Eos.Services
                 {
                     AddTLKString(cls.Name);
                     AddTLKString(cls.NamePlural);
+                    AddTLKString(cls.MediumName);
 
                     cls.NameLower.FromJson(cls.Name.ToJson());
                     foreach (var lang in Enum.GetValues<TLKLanguage>())
@@ -719,17 +720,13 @@ namespace Eos.Services
                                     break;
 
                                 case RequirementType.SKILL:
-#if SPACEPOPE
                                 case RequirementType.SKILLOR:
-#endif
                                     rec.Set("LABEL", ((Skill?)item.RequirementParam1)?.Name[project.DefaultLanguage].Text.Replace(" ", ""));
                                     break;
 
                                 case RequirementType.VAR:
                                     rec.Set("LABEL", "ScriptVar");
                                     break;
-
-#if SPACEPOPE
                                 case RequirementType.ARCCAST:
                                     rec.Set("LABEL", "Arcane");
                                     break;
@@ -746,7 +743,6 @@ namespace Eos.Services
                                 case RequirementType.DEITYOR:
                                     rec.Set("LABEL", "Deity");
                                     break;
-#endif
 
                                 default: 
                                     rec.Set("LABEL", "Label");
@@ -771,6 +767,7 @@ namespace Eos.Services
                                     break;
 
                                 case RequirementType.SKILL:
+                                case RequirementType.SKILLOR:
                                     rec.Set("ReqParam1", project.Skills.Get2DAIndex((Skill?)item.RequirementParam1));
                                     break;
 
@@ -1099,6 +1096,7 @@ namespace Eos.Services
             {
                 classes2da.Columns.AddColumn("Short");
                 classes2da.Columns.AddColumn("SkipSpellSelection");
+                classes2da.Columns.AddColumn("MediumName");
                 classes2da.Columns.SetHex("AlignRestrict");
                 classes2da.Columns.SetHex("AlignRstrctType");
 
@@ -1142,6 +1140,7 @@ namespace Eos.Services
                         record.Set("Short", GetTLKIndex(cls.Abbreviation));
                         record.Set("Name", GetTLKIndex(cls.Name));
                         record.Set("Plural", GetTLKIndex(cls.NamePlural));
+                        record.Set("MediumName", GetTLKIndex(cls.MediumName));
                         record.Set("Lower", GetTLKIndex(cls.NameLower));
                         record.Set("Description", GetTLKIndex(cls.Description));
                         record.Set("Icon", cls.Icon);
@@ -1620,6 +1619,8 @@ namespace Eos.Services
             if (racialtypes2da != null)
             {
                 racialtypes2da.Columns.AddColumn("FavoredEnemyFeat");
+                racialtypes2da.Columns.AddColumn("ParentRace");
+                racialtypes2da.Columns.AddColumn("SubraceField");
 
                 if (project.Settings.Export.LowercaseFilenames)
                 {
@@ -1683,6 +1684,8 @@ namespace Eos.Services
                         record.Set("NumberNormalFeatsEveryNthLevel", race.FeatEveryNthLevelCount);
                         record.Set("SkillPointModifierAbility", race.SkillPointModifierAbility?.ToString());
                         record.Set("FavoredEnemyFeat", project.Feats.Get2DAIndex(race.FavoredEnemyFeat));
+                        record.Set("ParentRace", race.ParentRace);
+                        record.Set("SubraceField", race.SubraceField);
 
                         WriteExtensionValues(record, race.ExtensionValues, project.Settings.Export.LowercaseFilenames);
                     }
@@ -2148,7 +2151,18 @@ namespace Eos.Services
                     polymorph2da.Columns.SetLowercase("HideItem");
                     polymorph2da.Columns.SetLowercase("EQUIPPED");
                 }
-
+                polymorph2da.Columns.AddColumn("SCALE");
+                polymorph2da.Columns.AddColumn("PERSPACE");
+                polymorph2da.Columns.AddColumn("CREPERSPACE");
+                polymorph2da.Columns.AddColumn("SIZECATEGORY");
+                polymorph2da.Columns.AddColumn("FOOTSTEPTYPE");
+                polymorph2da.Columns.AddColumn("HITDIST");
+                polymorph2da.Columns.AddColumn("PREFATCKDIST");
+                polymorph2da.Columns.AddColumn("WINGMODEL");
+                polymorph2da.Columns.AddColumn("TAILMODEL");
+                polymorph2da.Columns.AddColumn("AppearanceTypeFemale");
+                polymorph2da.Columns.AddColumn("SoundSetFemale");
+                polymorph2da.Columns.AddColumn("PortraitFemale");
                 AddExtensionColumns(polymorph2da, project.Polymorphs.Extensions);
                 foreach (var polymorph in project.Polymorphs.OrderBy(polymorph => polymorph?.Index))
                 {
@@ -2190,6 +2204,18 @@ namespace Eos.Services
                         record.Set("MergeW", polymorph.MergeWeapon ? polymorph.MergeWeapon : null);
                         record.Set("MergeI", polymorph.MergeAccessories ? polymorph.MergeAccessories : null);
                         record.Set("MergeA", polymorph.MergeArmor ? polymorph.MergeArmor : null);
+                        record.Set("SCALE", polymorph.Scale);
+                        record.Set("PERSPACE", polymorph.Perspace);
+                        record.Set("CREPERSPACE", polymorph.Creperspace);
+                        record.Set("SIZECATEGORY", polymorph.SizeCategory);
+                        record.Set("FOOTSTEPTYPE", polymorph.Footsteptype);
+                        record.Set("HITDIST", polymorph.HitDist);
+                        record.Set("PREFATCKDIST", polymorph.PrefAtckDist);
+                        record.Set("WINGMODEL", polymorph.WingModel);
+                        record.Set("TAILMODEL", polymorph.TailModel);
+                        record.Set("AppearanceTypeFemale", project.Appearances.Get2DAIndex(polymorph.AppearanceFemale));
+                        record.Set("SoundSetFemale", polymorph.SoundSetFemale);
+                        record.Set("PortraitFemale", polymorph.PortraitFemale);
 
                         WriteExtensionValues(record, polymorph.ExtensionValues, project.Settings.Export.LowercaseFilenames);
                     }
@@ -3444,6 +3470,8 @@ namespace Eos.Services
                 spells2da.Columns.AddColumn("TargetFlags");
                 spells2da.Columns.AddColumn("TargetSizeX");
                 spells2da.Columns.AddColumn("TargetSizeY");
+                spells2da.Columns.AddColumn("ShapeMastery");
+                spells2da.Columns.AddColumn("SpellDescriptors");
 
                 for (int i = 0; i < project.Spellbooks.Count; i++)
                 {
@@ -3583,6 +3611,8 @@ namespace Eos.Services
                         record.Set("TargetFlags", (int?)spell.TargetingFlags);
                         record.Set("TargetSizeX", spell.TargetSizeX);
                         record.Set("TargetSizeY", spell.TargetSizeY);
+                        record.Set("ShapeMastery", spell.ShapeMastery ? "1" : "****");
+                        record.Set("SpellDescriptors", spell.SpellDescriptors.HasValue ? (spell.SpellDescriptors.Value != 0 ? $"0x{((int)spell.SpellDescriptors.Value):X5}" : "****") : "****");
 
                         WriteExtensionValues(record, spell.ExtensionValues, project.Settings.Export.LowercaseFilenames);
                     }
