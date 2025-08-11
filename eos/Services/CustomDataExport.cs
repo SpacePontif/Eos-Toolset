@@ -1651,7 +1651,7 @@ namespace Eos.Services
 
                         var record = racialtypes2da[index];
                         record.Set("Label", MakeLabel(race.Name[project.DefaultLanguage].Text, "_"));
-                        record.Set("Abrev", race.Name[project.DefaultLanguage].Text.Substring(0, 2));
+                        record.Set("Abrev", GetFirstTwoVowels(race.Name[project.DefaultLanguage].Text));
                         record.Set("Name", GetTLKIndex(race.Name));
                         record.Set("ConverName", GetTLKIndex(race.Adjective));
                         record.Set("ConverNameLower", GetTLKIndex(race.AdjectiveLower));
@@ -3930,6 +3930,52 @@ namespace Eos.Services
             }
 
             return result;
+        }
+
+        private string GetFirstTwoVowels(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return "";
+
+            // Remove just "(DO NOT USE) " but keep what follows
+            string cleanName = name.Replace("(DO NOT USE) ", "").Trim();
+            
+            if (string.IsNullOrEmpty(cleanName))
+                return "";
+
+            // Split into words
+            string[] words = cleanName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            if (words.Length == 0)
+                return "";
+            
+            // Get first letter of first word
+            char firstLetter = words[0][0];
+            
+            if (words.Length >= 2)
+            {
+                // If there's a second word, use first letter of second word
+                char secondLetter = words[1][0];
+                return char.ToUpper(firstLetter).ToString() + char.ToLower(secondLetter).ToString();
+            }
+            else
+            {
+                // If only one word, find first vowel following the first letter
+                char? firstVowelAfter = null;
+                for (int i = 1; i < words[0].Length; i++)
+                {
+                    if ("aeiouAEIOU".Contains(words[0][i]))
+                    {
+                        firstVowelAfter = words[0][i];
+                        break;
+                    }
+                }
+                
+                if (firstVowelAfter.HasValue)
+                    return char.ToUpper(firstLetter).ToString() + char.ToLower(firstVowelAfter.Value).ToString();
+                else
+                    return words[0].Length >= 2 ? (char.ToUpper(words[0][0]).ToString() + char.ToLower(words[0][1]).ToString()) : words[0].ToUpper();
+            }
         }
 
         private void ExportIncludeFile(EosProject project)
