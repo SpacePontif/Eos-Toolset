@@ -8,6 +8,13 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <RootNamespace>Eos</RootNamespace>
     <ApplicationIcon>Assets\Icons\Eos.ico</ApplicationIcon>
+    <!-- Single-file publishing configuration -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <!-- Conservative trimming for Avalonia compatibility -->
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />

@@ -2461,19 +2461,7 @@ namespace Eos.Services
                 tmpPolymorph.Spell3 = CreateRef<Spell>(polymorph2da[i].AsInteger("SPELL3"));
                 tmpPolymorph.MergeWeapon = polymorph2da[i].AsBoolean("MergeW");
                 tmpPolymorph.MergeAccessories = polymorph2da[i].AsBoolean("MergeI");
-                tmpPolymorph.MergeArmor = polymorph2da[i].AsBoolean("MergeA");
-                tmpPolymorph.Scale = (float?)polymorph2da[i].AsFloat("SCALE");
-                tmpPolymorph.Perspace = (float?)polymorph2da[i].AsFloat("PERSPACE");
-                tmpPolymorph.Creperspace = (float?)polymorph2da[i].AsFloat("CREPERSPACE");
-                tmpPolymorph.SizeCategory = polymorph2da[i].AsInteger("SIZECATEGORY");
-                tmpPolymorph.Footsteptype = polymorph2da[i].AsInteger("FOOTSTEPTYPE");
-                tmpPolymorph.HitDist = (float?)polymorph2da[i].AsFloat("HITDIST");
-                tmpPolymorph.PrefAtckDist = (float?)polymorph2da[i].AsFloat("PREFATCKDIST");
-                tmpPolymorph.WingModel = polymorph2da[i].AsInteger("WINGMODEL");
-                tmpPolymorph.TailModel = polymorph2da[i].AsInteger("TAILMODEL");
-                tmpPolymorph.AppearanceFemale = CreateRef<Appearance>(polymorph2da[i].AsInteger("AppearanceTypeFemale"));
-                tmpPolymorph.SoundSetFemale = polymorph2da[i].AsInteger("SoundSetFemale");
-                tmpPolymorph.PortraitFemale = polymorph2da[i].AsString("PortraitFemale");                
+                tmpPolymorph.MergeArmor = polymorph2da[i].AsBoolean("MergeA");         
 
                 Standard.Polymorphs.Add(tmpPolymorph);
             }

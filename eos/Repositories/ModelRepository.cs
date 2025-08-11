@@ -107,15 +107,7 @@ namespace Eos.Repositories
 
                 modelLookup.Add(model.ID, model);
                 if (model.Index != null && model.Index != -1)
-                {
-                    int idx = model.Index ?? 0;
-                    if (modelIndexLookup.ContainsKey(idx))
-                    {
-                        Log.Error($"Duplicate model index detected in {typeof(T).Name}: Index={idx}, ID={model.ID}, Label={model.GetLabel()} - Skipping this entry.");
-                        return;
-                    }
-                    modelIndexLookup.Add(idx, model);
-                }
+                    modelIndexLookup.Add(model.Index ?? 0, model);
             }
         }
 
@@ -200,6 +192,9 @@ namespace Eos.Repositories
                                 if (model != null && model.Index == null)
                                 {
                                     model.Index = nextIndex;
+                                    // Remove existing entry if it exists, then add the new one
+                                    //if (modelIndexLookup.ContainsKey(model.Index ?? 0))
+                                      //  modelIndexLookup.Remove(model.Index ?? 0);
                                     modelIndexLookup.Add(model.Index ?? 0, model);
                                     nextIndex = GetNextFreeIndex(nextIndex);
                                 }

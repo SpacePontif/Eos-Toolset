@@ -100,13 +100,13 @@ namespace Eos.Nwn.Tlk
             if ((fileStream == null) || (reader == null))
                 throw new Exception();
 
-            if (stringRef == null || stringRef < 0)
+            if (stringRef >= header.StringCount)
+                throw new IndexOutOfRangeException();
+
+            if (stringRef == null)
                 return "";
 
-            int strRef = stringRef.Value;
-            if (strRef >= header.StringCount)
-                return "";
-
+            int strRef = stringRef ?? -1;
             if (!cache.ContainsKey(strRef))
             {
                 reader.BaseStream.Seek(Marshal.SizeOf<TlkHeader>() + (strRef * Marshal.SizeOf<TlkStringDataElement>()), SeekOrigin.Begin);

@@ -94,6 +94,7 @@ namespace Eos.Models
             get { return _appearance; }
             set { Set(ref _appearance, value); }
         }
+        public int? SoundSet { get; set; }
         public int? SoundSetFemale { get; set; }
         public String? PortraitFemale { get; set; }
 
@@ -152,6 +153,7 @@ namespace Eos.Models
             this.WingModel = json["WINGMODEL"]?.GetValue<int>();
             this.TailModel = json["TAILMODEL"]?.GetValue<int>();
             this.AppearanceFemale = CreateRefFromJson<Appearance>(json["AppearanceTypeFemale"]?.AsObject());
+            this.SoundSet = json["SoundSet"]?.GetValue<int>();
             this.SoundSetFemale = json["SoundSetFemale"]?.GetValue<int>();
             this.PortraitFemale = json["PortraitFemale"]?.GetValue<String>() ?? "";
         }
@@ -190,6 +192,7 @@ namespace Eos.Models
             polymorphJson.Add("WINGMODEL", this.WingModel);
             polymorphJson.Add("TAILMODEL", this.TailModel);
             polymorphJson.Add("AppearanceTypeFemale", CreateJsonRef(this.AppearanceFemale));
+            polymorphJson.Add("SoundSet", this.SoundSet);
             polymorphJson.Add("SoundSetFemale", this.SoundSetFemale);
             polymorphJson.Add("PortraitFemale", this.PortraitFemale);
 

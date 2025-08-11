@@ -209,7 +209,7 @@ namespace Eos.Services
                     Log.Info("Importing 2DA: {0}.2da", tableName);
                     result = importTableFunc(tableName, result != null ? tableGuid : Guid.NewGuid());
                 }
-                customDataDict.Remove(tableName.ToLower());
+                //customDataDict.Remove(tableName.ToLower());//
             }
 
             return result;
@@ -238,31 +238,70 @@ namespace Eos.Services
             return tmpRacialFeatsTable;
         }
 
+        // Determines whether an imported row is effectively empty (all columns blank/****)
+        private bool IsRowEffectivelyEmpty(TwoDimensionalArrayFile file, int rowIndex)
+        {
+            var row = file[rowIndex];
+            for (int c = 0; c < file.Columns.Count; c++)
+            {
+                var val = row[c];
+                if (val == null) continue;
+
+                if (val is string s)
+                {
+                    if (string.IsNullOrWhiteSpace(s)) continue;
+                    if (s == "****") continue;
+                    return false; // meaningful string
+                }
+                else
+                {
+                    // Any non-string (int / double / bool encoded as int) counts as meaningful data
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private bool ImportRecord<T>(int index, TwoDimensionalArrayFile import2DA, TwoDimensionalArrayFile original2DA, out Guid recordId) where T : BaseModel
         {
             recordId = Guid.Empty;
             var result = false;
+
             if (index < original2DA.Count)
             {
-                if (_importOverrides)
-                {
-                    var originalModel = MasterRepository.Standard.GetByIndex(typeof(T), index);
-                    var originalOverride = MasterRepository.Project.GetOverride(originalModel);
-                    if ((originalModel != null) && ((originalOverride == null) || (_replaceOverrides)))
-                    {
-                        var importRec = import2DA[index];
-                        var originalRec = original2DA[index];
+                var importRec = import2DA[index];
+                var originalRec = original2DA[index];
 
+                var originalModel = MasterRepository.Standard.GetByIndex(typeof(T), index);
+                var originalOverride = MasterRepository.Project.GetOverride(originalModel);
+
+                if (originalModel != null)
+                {
+                    // Existing base-game entry: handle overrides
+                    if (_importOverrides && ((originalOverride == null) || _replaceOverrides))
+                    {
                         if (!importRec.Equals(originalRec))
                         {
-                            recordId = originalModel.ID;
+                            recordId = originalModel.ID;   // Override existing
                             result = true;
                         }
                     }
                 }
+                else
+                {
+                    // Base game row slot exists but was empty (no model created in Standard repo)
+                    if (_importNewData && !IsRowEffectivelyEmpty(import2DA, index))
+                    {
+                        // New model (recordId stays empty so caller assigns new Guid)
+                        result = true;
+                    }
+                }
             }
             else
+            {
+                // Beyond vanilla row count: normal new data logic
                 result = _importNewData;
+            }
 
             return result;
         }
@@ -1302,7 +1341,7 @@ namespace Eos.Services
                     tmpAppearance.HasLegs = appearance2da[i].AsBoolean("HASLEGS");
                     tmpAppearance.HasArms = appearance2da[i].AsBoolean("HASARMS");
                     tmpAppearance.Portrait = appearance2da[i].AsString("PORTRAIT");
-                    tmpAppearance.SizeCategory = !appearance2da[i].IsNull("SIZECATEGORY") ? (SizeCategory)Enum.ToObject(typeof(SoundsetType), appearance2da[i].AsInteger("SIZECATEGORY") ?? 0) : SizeCategory.Medium;
+                    tmpAppearance.SizeCategory = !appearance2da[i].IsNull("SIZECATEGORY") ? (SizeCategory)Enum.ToObject(typeof(SizeCategory), appearance2da[i].AsInteger("SIZECATEGORY") ?? 0): SizeCategory.Medium;
                     tmpAppearance.PerceptionRange = !appearance2da[i].IsNull("PERCEPTIONDIST") ? (PerceptionDistance)Enum.ToObject(typeof(PerceptionDistance), appearance2da[i].AsInteger("PERCEPTIONDIST") ?? 0) : PerceptionDistance.Medium;
                     tmpAppearance.FootstepSound = !appearance2da[i].IsNull("FOOTSTEPTYPE") ? (FootstepSound)Enum.ToObject(typeof(FootstepSound), appearance2da[i].AsInteger("FOOTSTEPTYPE") ?? 0) : FootstepSound.Normal;
                     tmpAppearance.AppearanceSoundset = CreateRef<AppearanceSoundset>(appearance2da[i].AsInteger("SOUNDAPPTYPE"));
@@ -1469,6 +1508,7 @@ namespace Eos.Services
                     tmpVfx.ShakeDuration = vfx2da[i].AsFloat("ShakeDuration");
                     tmpVfx.LowViolenceModel = vfx2da[i].AsString("LowViolence");
                     tmpVfx.LowQualityModel = vfx2da[i].AsString("LowQuality");
+                    //Log.Info("Importing VFX ID: {0}", tmpVfx.Name);
                     tmpVfx.OrientWithObject = vfx2da[i].AsBoolean("OrientWithObject");
 
                     _importCollection.VisualEffects.Add(tmpVfx);
@@ -1822,6 +1862,7 @@ namespace Eos.Services
                     tmpPolymorph.WingModel = polymorph2da[i].AsInteger("WINGMODEL");
                     tmpPolymorph.TailModel = polymorph2da[i].AsInteger("TAILMODEL");
                     tmpPolymorph.AppearanceFemale = CreateRef<Appearance>(polymorph2da[i].AsInteger("AppearanceTypeFemale"));
+                    tmpPolymorph.SoundSet = polymorph2da[i].AsInteger("SoundSet");
                     tmpPolymorph.SoundSetFemale = polymorph2da[i].AsInteger("SoundSetFemale");
                     tmpPolymorph.PortraitFemale = polymorph2da[i].AsString("PortraitFemale");        
 
@@ -1967,17 +2008,24 @@ namespace Eos.Services
                     tmpDamageType.Group = CreateRef<DamageTypeGroup>(damagetypes2da[i].AsInteger("DamageTypeGroup"));
                     if (damagetypes2da.Columns.IndexOf("DamageRangedProjectile") >= 0)
                     {
-                        tmpDamageType.RangedDamageType = CreateRef<RangedDamageType>(damagetypes2da[i].AsInteger("DamageRangedProjectile"));
+                        var rangedIndex = damagetypes2da[i].AsInteger("DamageRangedProjectile");
+                        tmpDamageType.RangedDamageType = CreateRef<RangedDamageType>(rangedIndex);
 
-                        if (ImportRangedDamageTypeRecord(i, out var rangedRecordId))
+                        if (rangedIndex.HasValue && rangedIndex.Value > 0)
                         {
-                            var tmpRangedDamageType = new RangedDamageType();
-                            tmpRangedDamageType.ID = rangedRecordId;
-                            tmpRangedDamageType.Index = damagetypes2da[i].AsInteger("DamageRangedProjectile");
-                            tmpRangedDamageType.SourceLabel = damagetypes2da[i].AsString("Label");
-                            tmpRangedDamageType.Name = damagetypes2da[i].AsString("Label") ?? "";
-
-                            _importCollection.RangedDamageTypes.Add(tmpRangedDamageType);
+                            // Only attempt import once per rangedIndex
+                            if (_importCollection.RangedDamageTypes.GetByIndex(rangedIndex.Value) == null)
+                            {
+                                if (ImportRangedDamageTypeRecord(rangedIndex.Value, out var rangedRecordId))
+                                {
+                                    var tmpRangedDamageType = new RangedDamageType
+                                    {
+                                        ID = rangedRecordId,
+                                        Index = rangedIndex.Value
+                                    };
+                                    _importCollection.RangedDamageTypes.Add(tmpRangedDamageType);
+                                }
+                            }
                         }
                     }
 
@@ -3585,8 +3633,8 @@ namespace Eos.Services
                 ImportVisualEffects();
                 ImportProgrammedEffects();
                 ImportSoundsets();
-                ImportPolymorphs();
                 ImportPortraits();
+                ImportPolymorphs();
                 ImportCompanions();
                 ImportFamiliars();
                 ImportTraps();

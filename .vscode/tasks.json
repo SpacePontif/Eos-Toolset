@@ -22,5 +22,29 @@
             "group": "build",
             "problemMatcher": []
         }
+        ,
+        {
+            "label": "dotnet: publish eos-edit (self-contained single exe)",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "publish",
+                "eos-edit/eos-edit.csproj",
+                "-c",
+                "Release",
+                "/warn:0",
+                "-r",
+                "win-x64",
+                "--self-contained",
+                "true",
+                "/p:PublishSingleFile=true",
+                "/p:PublishTrimmed=true"
+            ],
+            "group": "build",
+            "problemMatcher": ["$msCompile"]
+        }
     ]
 }
+
+
+dotnet publish eos-edit/eos-edit.csproj -c Release

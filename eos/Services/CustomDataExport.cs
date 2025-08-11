@@ -2214,6 +2214,7 @@ namespace Eos.Services
                         record.Set("WINGMODEL", polymorph.WingModel);
                         record.Set("TAILMODEL", polymorph.TailModel);
                         record.Set("AppearanceTypeFemale", project.Appearances.Get2DAIndex(polymorph.AppearanceFemale));
+                        record.Set("SoundSet", polymorph.SoundSet);
                         record.Set("SoundSetFemale", polymorph.SoundSetFemale);
                         record.Set("PortraitFemale", polymorph.PortraitFemale);
 
@@ -3229,7 +3230,7 @@ namespace Eos.Services
                         }
 
                         var record = damagetypes2da[index];
-                        record.Set("Label", MakeLabel(damageType.Name[project.DefaultLanguage].Text, ""));
+                        record.Set("Label", MakeLabel(damageType.Name, ""));
                         record.Set("CharsheetStrref", GetTLKIndex(damageType.Name));
                         record.Set("DamageTypeGroup", project.DamageTypeGroups.Get2DAIndex(damageType.Group));
                         record.Set("DamageRangedProjectile", project.RangedDamageTypes.Get2DAIndex(damageType.RangedDamageType) ?? 0);
@@ -3237,7 +3238,7 @@ namespace Eos.Services
                         WriteExtensionValues(record, damageType.ExtensionValues, project.Settings.Export.LowercaseFilenames);
 
                         var dhvRecord = damagehitvisual2da[index];
-                        dhvRecord.Set("Label", MakeLabel(damageType.Name[project.DefaultLanguage].Text, ""));
+                        dhvRecord.Set("Label", MakeLabel(damageType.Name, ""));
                         dhvRecord.Set("VisualEffectID", project.VisualEffects.Get2DAIndex(damageType.MeleeImpactVFX));
                         dhvRecord.Set("RangedEffectID", project.VisualEffects.Get2DAIndex(damageType.RangedImpactVFX));
                     }

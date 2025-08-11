@@ -68,6 +68,7 @@
               <RowDefinition Height="auto" MinHeight="25"/>
               <RowDefinition Height="auto" MinHeight="25"/>
               <RowDefinition Height="auto" MinHeight="25"/>
+              <RowDefinition Height="auto" MinHeight="25"/>
               <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -187,12 +188,15 @@
 
             <TextBlock Text="Appearance Female" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="27" Grid.Column="2"/>
             <uc:AppearanceComboBox SelectedValue="{Binding Data.AppearanceFemale}" IsNullable="True" Grid.Row="27" Grid.Column="3"/>
+            
+            <TextBlock Text="SoundSet" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="28" Grid.Column="0"/>
+            <NumericUpDown Value="{Binding Data.SoundSet}" Grid.Row="28" Grid.Column="1" Increment="1"/>
+            
+            <TextBlock Text="SoundSet Female" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="28" Grid.Column="2"/>
+            <NumericUpDown Value="{Binding Data.SoundSetFemale}" Grid.Row="28" Grid.Column="3" Increment="1"/>
 
-            <TextBlock Text="SoundSet Female" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="28" Grid.Column="0"/>
-            <NumericUpDown Value="{Binding Data.SoundSetFemale}" Grid.Row="28" Grid.Column="1" Increment="1"/>
-
-            <TextBlock Text="Portrait Female" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="28" Grid.Column="2"/>
-            <TextBox Text="{Binding Data.PortraitFemale}" Grid.Row="28" Grid.Column="3"/>
+            <TextBlock Text="Portrait Female" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="29" Grid.Column="0"/>
+            <TextBox Text="{Binding Data.PortraitFemale}" Grid.Row="29" Grid.Column="1"/>
           </Grid>
         </Border>
       </ScrollViewer>
