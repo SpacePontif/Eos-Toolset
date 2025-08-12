@@ -2282,6 +2282,7 @@ namespace Eos.Services
             {
                 if (polymorph == null) continue;
                 polymorph.Appearance = SolveInstance(polymorph.Appearance);
+                polymorph.AppearanceFemale = SolveInstance(polymorph.AppearanceFemale);
                 polymorph.RacialType = SolveInstance(polymorph.RacialType);
                 polymorph.Portrait = SolveInstance(polymorph.Portrait);
                 //polymorph.Soundset = SolveInstance(polymorph.Soundset, Standard.Soundsets); // Unused will not be imported!

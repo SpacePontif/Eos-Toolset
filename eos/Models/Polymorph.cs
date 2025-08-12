@@ -15,6 +15,7 @@ namespace Eos.Models
     {
         private String _name = "";
         private Appearance? _appearance;
+        private Appearance? _appearanceFemale;
         private Race? _racialType;
         private Portrait? _portrait;
         private Spell? _spell1;
@@ -91,8 +92,8 @@ namespace Eos.Models
         public int? TailModel { get; set; }
         public Appearance? AppearanceFemale
         {
-            get { return _appearance; }
-            set { Set(ref _appearance, value); }
+            get { return _appearanceFemale; }
+            set { Set(ref _appearanceFemale, value); }
         }
         public int? SoundSet { get; set; }
         public int? SoundSetFemale { get; set; }
@@ -112,6 +113,7 @@ namespace Eos.Models
         {
             base.ResolveReferences();
             Appearance = Resolve(Appearance, MasterRepository.Appearances);
+            AppearanceFemale = Resolve(AppearanceFemale, MasterRepository.Appearances);
             Portrait = Resolve(Portrait, MasterRepository.Portraits);
             RacialType = Resolve(RacialType, MasterRepository.Races);
             Spell1 = Resolve(Spell1, MasterRepository.Spells);
