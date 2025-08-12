@@ -3420,38 +3420,31 @@ namespace Eos.Services
             }
         }
 
-        private int GetSubFeatId(Spell subSpell)
+        private Feat? GetSpellFeat(Spell spell, EosProject project)
         {
-            if (subSpell.ParentSpell == null) return -1;
+            if (spell == null) return null;
 
-            if (subSpell.ParentSpell.SubSpell1 == subSpell)
-                return 1;
-            if (subSpell.ParentSpell.SubSpell2 == subSpell)
-                return 2;
-            if (subSpell.ParentSpell.SubSpell3 == subSpell)
-                return 3;
-            if (subSpell.ParentSpell.SubSpell4 == subSpell)
-                return 4;
-            if (subSpell.ParentSpell.SubSpell5 == subSpell)
-                return 5;
-            if (subSpell.ParentSpell.SubSpell6 == subSpell)
-                return 6;
-            if (subSpell.ParentSpell.SubSpell7 == subSpell)
-                return 7;
-            if (subSpell.ParentSpell.SubSpell8 == subSpell)
-                return 8;
+            // Get the canonical 2DA index for the target spell
+            var targetIndex = project.Spells.Get2DAIndex(spell);
+            if (targetIndex == null) return null;
 
-            return -1;
-        }
+            // Combine master and project feats, avoid duplicates by ID
+            var allFeats = MasterRepository.Feats
+                .Concat(project.Feats)
+                .Where(f => f != null)
+                .GroupBy(f => f.ID)
+                .Select(g => g.First());
 
-        private Feat? GetSpellFeat(Spell spell)
-        {
-            foreach (var feat in MasterRepository.Feats)
+            foreach (var feat in allFeats)
             {
-                if ((feat != null) && (feat.OnUseEffect == spell))
-                    return feat;
+                if (feat != null && feat.OnUseEffect != null)
+                {
+                    // Compare by canonical 2DA index instead of object reference
+                    var featOnUseIndex = project.Spells.Get2DAIndex(feat.OnUseEffect);
+                    if (featOnUseIndex == targetIndex)
+                        return feat;
+                }
             }
-
             return null;
         }
 
@@ -3585,14 +3578,43 @@ namespace Eos.Services
                         {
                             if (spell.ParentSpell != null)
                             {
-                                var parentFeat = GetSpellFeat(spell.ParentSpell);
-                                var subFeatId = GetSubFeatId(spell);
-
-                                record.Set("FeatID", (0x10000 * subFeatId) + project.Feats.Get2DAIndex(parentFeat));
+                                var parentFeat = GetSpellFeat(spell.ParentSpell, project);
+                                
+                                var subSpells = new[] {
+                                    spell.ParentSpell.SubSpell1,
+                                    spell.ParentSpell.SubSpell2,
+                                    spell.ParentSpell.SubSpell3,
+                                    spell.ParentSpell.SubSpell4,
+                                    spell.ParentSpell.SubSpell5,
+                                    spell.ParentSpell.SubSpell6,
+                                    spell.ParentSpell.SubSpell7,
+                                    spell.ParentSpell.SubSpell8
+                                };
+                                
+                                var subFeatId = -1;
+                                for (int i = 0; i < subSpells.Length; i++)
+                                {
+                                    if (project.Spells.Get2DAIndex(subSpells[i]) == index)
+                                    {
+                                        subFeatId = i + 1;
+                                        break;
+                                    }
+                                }
+                                
+                                if (parentFeat != null)
+                                {
+                                    var featId = (0x10000 * (subFeatId + 6000)) + project.Feats.Get2DAIndex(parentFeat);
+                                    record.Set("FeatID", featId);
+                                }
+                                else
+                                {
+                                    Log.Info("No parentFeat found for spell {0} (parentSpell {1})", 
+                                        MakeLabel(spell.Name[project.DefaultLanguage].Text, "_"), project.Spells.Get2DAIndex(spell.ParentSpell));
+                                }
                             }
                             else
                             {
-                                var spellFeat = GetSpellFeat(spell);
+                                var spellFeat = GetSpellFeat(spell, project);
                                 if (spellFeat != null)
                                 {
                                     record.Set("FeatID", project.Feats.Get2DAIndex(spellFeat));
