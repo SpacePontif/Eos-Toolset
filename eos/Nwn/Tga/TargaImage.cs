@@ -188,8 +188,17 @@ namespace Nwn.Tga
             }
 
             ImageData = new byte[ImageSize];
-            for (int y = 0; y < Height; y++)
-                Array.Copy(rows[y], 0, ImageData, StrideSize * y, StrideSize);
+        for (int y = 0; y < Height; y++)
+        {
+            if (y >= rows.Count)
+                throw new InvalidDataException($"TGA image row count ({rows.Count}) is less than expected height ({Height}). File may be truncated or malformed.");
+        
+            if (rows[y].Length < StrideSize)
+                throw new InvalidDataException($"TGA image row {y} is too short (got {rows[y].Length}, expected {StrideSize}). File may be corrupt.");
+        
+            Array.Copy(rows[y], 0, ImageData, StrideSize * y, StrideSize);
+        }
+                
         }
     }
 }

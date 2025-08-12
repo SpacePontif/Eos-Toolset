@@ -40,7 +40,7 @@ namespace Eos.Repositories
         }
     }
 
-    public delegate object? ResourceLoaderFunc(Stream stream);
+    public delegate object? ResourceLoaderFunc(Stream stream, string filename);
 
     public class ResourceRepository
     {
@@ -267,10 +267,10 @@ namespace Eos.Repositories
                                 if ((resource.Type == NWNResourceType.TGA) && (File.Exists(Constants.IconResourcesFilePath + resource.ResRef + ".tga")))
                                 {
                                     var loadResource = GetResourceLoader(resource.Type);
-
-                                    var resBytes = File.ReadAllBytes(Constants.IconResourcesFilePath + resource.ResRef + ".tga");
+                                    var tgaPath = Constants.IconResourcesFilePath + resource.ResRef + ".tga";
+                                    var resBytes = File.ReadAllBytes(tgaPath);
                                     resource.RawData = new MemoryStream(resBytes);
-                                    resource.Data = loadResource(new MemoryStream(resBytes));
+                                    resource.Data = loadResource(new MemoryStream(resBytes), tgaPath);
                                     resource.IsLoaded = true;
                                 }
                                 else
@@ -282,7 +282,7 @@ namespace Eos.Repositories
                                         resource.Type = rawResource.Type;
                                         rawResource.RawData.CopyTo(resource.RawData);
                                         resource.RawData.Position = 0;
-                                        resource.Data = loadResource(resource.RawData);
+                                        resource.Data = loadResource(resource.RawData, resource.FilePath);
                                         resource.IsLoaded = true;
                                     }
                                 }
@@ -293,7 +293,7 @@ namespace Eos.Repositories
 
                                 var resBytes = File.ReadAllBytes(resource.FilePath);
                                 resource.RawData = new MemoryStream(resBytes);
-                                resource.Data = loadResource(new MemoryStream(resBytes));
+                                resource.Data = loadResource(new MemoryStream(resBytes), resource.FilePath);
                                 resource.IsLoaded = true;
                             }
                         }
@@ -387,7 +387,7 @@ namespace Eos.Repositories
         }
 
         // Resource Loaders
-        private object? DefaultResourceLoader(Stream stream)
+        private object? DefaultResourceLoader(Stream stream, string filename)
         {
             return stream;
         }

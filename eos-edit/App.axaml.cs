@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -62,37 +63,44 @@ namespace Eos
             }
         }
 
-        private object? TargaResourceLoader(Stream stream)
+        private object? TargaResourceLoader(Stream stream, string filename)
         {
             Bitmap? result = null;
             if (stream.Length > 0)
             {
-                TargaImage tga = new TargaImage(stream, true);
-
-                PixelFormat pf = PixelFormats.Gray8;
-                switch (tga.BitsPerPixel)
-                {
-                    case 8: pf = PixelFormats.Gray8; break; // Wrong
-                    case 16: pf = PixelFormats.Gray8; break; // Wrong
-                    case 24: pf = PixelFormats.Bgra8888; break; // Wrong
-                    case 32: pf = PixelFormats.Bgra8888; break; // bgr32
-                }
-
-                var imageDataPtr = GCHandle.Alloc(tga.ImageData, GCHandleType.Pinned);
                 try
                 {
-                    result = new Bitmap(pf, AlphaFormat.Unpremul, imageDataPtr.AddrOfPinnedObject(), PixelSize.FromSize(new Size(tga.Width, tga.Height), 1.0), new Vector(96, 96), tga.StrideSize);
+                    TargaImage tga = new TargaImage(stream, true);
+
+                    PixelFormat pf = PixelFormats.Gray8;
+                    switch (tga.BitsPerPixel)
+                    {
+                        case 8: pf = PixelFormats.Gray8; break; // Wrong
+                        case 16: pf = PixelFormats.Gray8; break; // Wrong
+                        case 24: pf = PixelFormats.Bgra8888; break; // Wrong
+                        case 32: pf = PixelFormats.Bgra8888; break; // bgr32
+                    }
+
+                    var imageDataPtr = GCHandle.Alloc(tga.ImageData, GCHandleType.Pinned);
+                    try
+                    {
+                        result = new Bitmap(pf, AlphaFormat.Unpremul, imageDataPtr.AddrOfPinnedObject(), PixelSize.FromSize(new Size(tga.Width, tga.Height), 1.0), new Vector(96, 96), tga.StrideSize);
+                    }
+                    finally
+                    {
+                        imageDataPtr.Free();
+                    }
                 }
-                finally 
-                { 
-                    imageDataPtr.Free(); 
+                catch (Exception ex)
+                {
+                    Log.Error($"Failed to load TGA image '{filename}': {ex.Message}");
+                    return null;
                 }
             }
-         
             return result;
         }
 
-        private object? ScriptSourceLoader(Stream stream)
+        private object? ScriptSourceLoader(Stream stream, string filename)
         {
             if (stream.Length > 0)
             {
