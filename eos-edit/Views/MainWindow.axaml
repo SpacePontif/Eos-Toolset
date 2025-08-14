@@ -18,7 +18,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Eos.Views.MainWindow" MinHeight="300" MinWidth="500"
-        Height="700" Width="1100" Loaded="mainWindow_Loaded"
+        Height="1000" Width="1400" Loaded="mainWindow_Loaded"
         x:Name="mainWindow" Tag="Eos Toolset v0.77a" FontFamily="Segoe UI"
         Closing="mainWindow_Closing"
         Icon="/Assets/Icons/Eos.ico">

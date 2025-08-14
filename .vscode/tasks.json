@@ -9,21 +9,6 @@
             "label": "dotnet: build"
         },
         {
-            "type": "process",
-            "label": "dotnet: build (Release)",
-            "command": "dotnet",
-            "args": [
-                "build",
-                "EosToolset.sln",
-                "-c",
-                "Release",
-                "/warn:0"
-            ],
-            "group": "build",
-            "problemMatcher": []
-        }
-        ,
-        {
             "label": "dotnet: publish eos-edit (self-contained single exe)",
             "type": "shell",
             "command": "dotnet",
@@ -36,8 +21,7 @@
                 "win-x64",
                 "--self-contained",
                 "true",
-                "/p:PublishSingleFile=true",
-                "/p:PublishTrimmed=true"
+                "/p:PublishSingleFile=true"
             ],
             "group": "build",
             "problemMatcher": ["$msCompile"]
