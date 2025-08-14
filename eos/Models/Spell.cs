@@ -7,11 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 using static Eos.Models.JsonUtils;
 
 namespace Eos.Models
 {
+    public class SpellbookEntryInfo
+    {
+        public string SpellbookName { get; set; } = "";
+        public int Level { get; set; }
+    }
+
     public class Spell : BaseModel
     {
         private SpellSchool _spellSchool = SpellSchool.G;
@@ -150,6 +157,91 @@ namespace Eos.Models
 
         public bool ShapeMastery { get; set; }
         public SpellDescriptors? SpellDescriptors { get; set; }
+
+        public IEnumerable<SpellbookEntryInfo> SpellbookEntries
+        {
+            get
+            {
+                var entries = new List<SpellbookEntryInfo>();
+                
+                if (MasterRepository.Spellbooks != null)
+                {
+                    // Group spellbooks by their ID to handle overrides properly
+                    var spellbookGroups = MasterRepository.Spellbooks
+                        .Where(sb => sb != null)
+                        .GroupBy(sb => sb!.IsOverride ? (sb.Overrides ?? sb.ID) : sb.ID)
+                        .ToList();
+
+                    foreach (var group in spellbookGroups)
+                    {
+                        // Prefer override spellbooks over standard ones
+                        var spellbook = group.FirstOrDefault(sb => sb != null && sb.IsOverride) ?? group.FirstOrDefault(sb => sb != null);
+                        
+                        if (spellbook != null)
+                        {
+                            // Check each level for this spell
+                            CheckSpellbookLevel(entries, spellbook, spellbook.Level0, 0);
+                            CheckSpellbookLevel(entries, spellbook, spellbook.Level1, 1);
+                            CheckSpellbookLevel(entries, spellbook, spellbook.Level2, 2);
+                            CheckSpellbookLevel(entries, spellbook, spellbook.Level3, 3);
+                            CheckSpellbookLevel(entries, spellbook, spellbook.Level4, 4);
+                            CheckSpellbookLevel(entries, spellbook, spellbook.Level5, 5);
+                            CheckSpellbookLevel(entries, spellbook, spellbook.Level6, 6);
+                            CheckSpellbookLevel(entries, spellbook, spellbook.Level7, 7);
+                            CheckSpellbookLevel(entries, spellbook, spellbook.Level8, 8);
+                            CheckSpellbookLevel(entries, spellbook, spellbook.Level9, 9);
+                        }
+                    }
+                }
+                
+                return entries.OrderBy(e => e.SpellbookName).ThenBy(e => e.Level);
+            }
+        }
+
+        private void CheckSpellbookLevel(List<SpellbookEntryInfo> entries, Spellbook spellbook, ObservableCollection<SpellbookEntry> levelSpells, int level)
+        {
+            // Skip spellbooks with no name (might be invalid/placeholder spellbooks)
+            if (string.IsNullOrWhiteSpace(spellbook.Name))
+                return;
+                
+            for (int i = 0; i < levelSpells.Count; i++)
+            {
+                var spellEntry = levelSpells[i];
+                
+                if (spellEntry.Spell != null)
+                {
+                    bool isMatch = false;
+                    
+                    // Direct reference match - the spellbook entry directly references this spell
+                    if (ReferenceEquals(spellEntry.Spell, this))
+                    {
+                        isMatch = true;
+                    }
+                    // If this spell is an override, check if the spellbook entry references the original spell
+                    else if (this.IsOverride && this.Overrides.HasValue)
+                    {
+                        // Check if the spellbook entry references the original spell that this overrides
+                        if (spellEntry.Spell.ID == this.Overrides.Value)
+                        {
+                            isMatch = true;
+                        }
+                    }
+                    
+                    if (isMatch)
+                    {
+                        // Check if we already have an entry for this spellbook and level to avoid duplicates
+                        if (!entries.Any(e => e.SpellbookName == spellbook.Name && e.Level == level))
+                        {
+                            entries.Add(new SpellbookEntryInfo
+                            {
+                                SpellbookName = spellbook.Name,
+                                Level = level
+                            });
+                        }
+                    }
+                }
+            }
+        }
 
         protected override void Initialize()
         {
