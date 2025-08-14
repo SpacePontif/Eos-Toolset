@@ -131,14 +131,17 @@ namespace Eos.Views
             {
                 foreach (var subItem in item.Items)
                 {
-                    var tmpResult = item.ContainerFromItem(subItem) as TreeViewItem;
-                    if (data != subItem)
+                    if (subItem != null)
                     {
-                        result = GetDataContainer(tmpResult, data);
-                        if (result != null) return result;
+                        var tmpResult = item.ContainerFromItem(subItem) as TreeViewItem;
+                        if (data != subItem)
+                        {
+                            result = GetDataContainer(tmpResult, data);
+                            if (result != null) return result;
+                        }
+                        else
+                            return tmpResult;
                     }
-                    else
-                        return tmpResult;
                 }
             }
 
@@ -156,23 +159,27 @@ namespace Eos.Views
                     {
                         foreach (var itemData in tvAdditional.Items)
                         {
-                            TreeViewItem? container = tvCustom.TreeContainerFromItem(itemData) as TreeViewItem;
-                            if (itemData != model) container = GetDataContainer(container, model);
-
-                            if (container != null)
+                            if (itemData != null)
                             {
-                                var tmpItem = container;
-                                while (tmpItem.Parent is TreeViewItem tvi)
-                                {
-                                    tvi.IsExpanded = true;
-                                    tmpItem = tvi;
-                                }
+                                TreeViewItem? container = tvCustom.TreeContainerFromItem(itemData) as TreeViewItem;
+                                if (itemData != model && container != null) 
+                                    container = GetDataContainer(container, model);
 
-                                container.BringIntoView();
-                                tvAdditional.SelectedItems = null;
-                                container.IsSelected = true;
-                                container.Focus();
-                                break;
+                                if (container != null)
+                                {
+                                    var tmpItem = container;
+                                    while (tmpItem.Parent is TreeViewItem tvi)
+                                    {
+                                        tvi.IsExpanded = true;
+                                        tmpItem = tvi;
+                                    }
+
+                                    container.BringIntoView();
+                                    tvAdditional.SelectedItems = null;
+                                    container.IsSelected = true;
+                                    container.Focus();
+                                    break;
+                                }
                             }
                         }
 
@@ -186,23 +193,27 @@ namespace Eos.Views
                     {
                         foreach (var itemData in tvCustom.Items)
                         {
-                            TreeViewItem? container = tvCustom.TreeContainerFromItem(itemData) as TreeViewItem;
-                            if (itemData != model) container = GetDataContainer(container, model);
-
-                            if (container != null)
+                            if (itemData != null)
                             {
-                                var tmpItem = container;
-                                while (tmpItem.Parent is TreeViewItem tvi)
-                                {
-                                    tvi.IsExpanded = true;
-                                    tmpItem = tvi;
-                                }
+                                TreeViewItem? container = tvCustom.TreeContainerFromItem(itemData) as TreeViewItem;
+                                if (itemData != model && container != null) 
+                                    container = GetDataContainer(container, model);
 
-                                container.BringIntoView();
-                                tvCustom.SelectedItems = null;
-                                container.IsSelected = true;
-                                container.Focus();
-                                break;
+                                if (container != null)
+                                {
+                                    var tmpItem = container;
+                                    while (tmpItem.Parent is TreeViewItem tvi)
+                                    {
+                                        tvi.IsExpanded = true;
+                                        tmpItem = tvi;
+                                    }
+
+                                    container.BringIntoView();
+                                    tvCustom.SelectedItems = null;
+                                    container.IsSelected = true;
+                                    container.Focus();
+                                    break;
+                                }
                             }
                         }
 
@@ -216,23 +227,27 @@ namespace Eos.Views
                     {
                         foreach (var itemData in tvStandard.Items)
                         {
-                            TreeViewItem? container = tvStandard.TreeContainerFromItem(itemData) as TreeViewItem;
-                            if (itemData != model) container = GetDataContainer(container, model);
-
-                            if (container != null)
+                            if (itemData != null)
                             {
-                                var tmpItem = container;
-                                while (tmpItem.Parent is TreeViewItem tvi)
-                                {
-                                    tvi.IsExpanded = true;
-                                    tmpItem = tvi;
-                                }
+                                TreeViewItem? container = tvStandard.TreeContainerFromItem(itemData) as TreeViewItem;
+                                if (itemData != model && container != null) 
+                                    container = GetDataContainer(container, model);
 
-                                container.BringIntoView();
-                                tvStandard.SelectedItems = null;
-                                container.IsSelected = true;
-                                container.Focus();
-                                break;
+                                if (container != null)
+                                {
+                                    var tmpItem = container;
+                                    while (tmpItem.Parent is TreeViewItem tvi)
+                                    {
+                                        tvi.IsExpanded = true;
+                                        tmpItem = tvi;
+                                    }
+
+                                    container.BringIntoView();
+                                    tvStandard.SelectedItems = null;
+                                    container.IsSelected = true;
+                                    container.Focus();
+                                    break;
+                                }
                             }
                         }
 
@@ -278,18 +293,19 @@ namespace Eos.Views
             //var mdl = new MdlFile(stream ?? new MemoryStream());
         }
 
-        private void miOpenProject_Click(object sender, RoutedEventArgs e)
+        private async void miOpenProject_Click(object sender, RoutedEventArgs e)
         {
             if ((Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime app) && (app.MainWindow != null))
             {
-                var dlg = new OpenFileDialog();
-                dlg.AllowMultiple = false;
-                dlg.Filters?.Add(new FileDialogFilter() { Name = "Eos Project File (*.eosproj)", Extensions = { "eosproj" } });
-                dlg.ShowAsync(app.MainWindow).ContinueWith(t =>
+                var files = await app.MainWindow.StorageProvider.OpenFilePickerAsync(new Avalonia.Platform.Storage.FilePickerOpenOptions
                 {
-                    if ((t.Result != null) && (t.Result.Any()))
-                        MessageDispatcher.Send(MessageType.OpenProject, t.Result.First());
-                }, TaskScheduler.FromCurrentSynchronizationContext());
+                    Title = "Open Project",
+                    AllowMultiple = false,
+                    FileTypeFilter = new[] { new Avalonia.Platform.Storage.FilePickerFileType("Eos Project File") { Patterns = new[] { "*.eosproj" } } }
+                });
+
+                if (files.Any())
+                    MessageDispatcher.Send(MessageType.OpenProject, files.First().Path.LocalPath);
             }
         }
 

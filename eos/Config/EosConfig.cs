@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -82,6 +83,7 @@ namespace Eos.Config
             NwnBasePath = overridePath;
         }
 
+        [SupportedOSPlatform("windows")]
         private static String FindSteamPathByRegistry()
         {
             // TODO: Linux/GoG/Beamdog/etc
@@ -92,6 +94,7 @@ namespace Eos.Config
             return "";
         }
 
+        [SupportedOSPlatform("windows")]
         private static String FindGOGPathByRegistry()
         {
             var gogKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\GOG.com\Games\1097893768", false);
@@ -114,7 +117,7 @@ namespace Eos.Config
 
             // Steam
             var steamPath = Path.Combine("Steam", "steamapps", "common", "Neverwinter Nights");
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            if (OperatingSystem.IsWindows())
             {
                 path = FindSteamPathByRegistry();
                 if (path == "")
@@ -208,7 +211,7 @@ namespace Eos.Config
             }
 
             // GOG
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            if (OperatingSystem.IsWindows())
             {
                 path = FindGOGPathByRegistry();
                 if (path == "")

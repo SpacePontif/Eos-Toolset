@@ -1,8 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Dialogs;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using Eos.Services;
 using Eos.ViewModels.Base;
 using Eos.ViewModels.Dialogs;
@@ -29,18 +29,22 @@ namespace Eos.Views.Dialogs
             WindowService.ShowMessage(args.Message, "Error", MessageBoxButtons.Ok, MessageBoxIcon.Warning);
         }
 
-        private void btOpenDlg_Click(object sender, RoutedEventArgs e)
+        private async void btOpenDlg_Click(object sender, RoutedEventArgs e)
         {
             if (DataContext is NewProjectViewModel vm)
             {
                 if ((Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime app) && (app.MainWindow != null))
                 {
-                    var dlg = new OpenFolderDialog();
-                    dlg.ShowAsync(app.MainWindow).ContinueWith(t =>
+                    var storageProvider = app.MainWindow.StorageProvider;
+                    var result = await storageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
                     {
-                        if (t.Result != null)
-                            vm.ProjectFolder = t.Result;
-                    }, TaskScheduler.FromCurrentSynchronizationContext());
+                        AllowMultiple = false
+                    });
+                    
+                    if (result.Count > 0)
+                    {
+                        vm.ProjectFolder = result[0].Path.LocalPath;
+                    }
                 }
             }
         }

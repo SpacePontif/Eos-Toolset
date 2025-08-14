@@ -103,10 +103,10 @@ namespace Eos.Models.Tables
             {
                 Items.Move(index, index - 1);
                 item.Index = index - 1;
-                Items[index].Index = index;
+                if (Items[index] != null)
+                    Items[index]!.Index = index;
             }
         }
-        
         public void MoveDown(T item)
         {
             var index = Items.IndexOf(item);
@@ -114,7 +114,8 @@ namespace Eos.Models.Tables
             {
                 Items.Move(index, index + 1);
                 item.Index = index + 1;
-                Items[index].Index = index;
+                if (Items[index] != null)
+                    Items[index]!.Index = index;
             }
         }
 
