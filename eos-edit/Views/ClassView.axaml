@@ -59,7 +59,7 @@
 
             <Grid Grid.Row="1" Grid.Column="0">
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="110"/>
                 <ColumnDefinition Width="*" MinWidth="300"/>
               </Grid.ColumnDefinitions>
               <Grid.RowDefinitions>
