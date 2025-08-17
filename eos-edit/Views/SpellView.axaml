@@ -73,7 +73,6 @@
                 <RowDefinition Height="25" MinHeight="25"/>
                 <RowDefinition Height="25" MinHeight="25"/>
                 <RowDefinition Height="auto" MinHeight="60"/>
-                <RowDefinition Height="auto" MinHeight="60"/>
                 <RowDefinition Height="auto" MinHeight="25"/>
                 <RowDefinition Height="25" MinHeight="25"/>
                 <RowDefinition Height="25" MinHeight="25"/>
@@ -96,56 +95,66 @@
               <TextBlock Text="Hint" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="2" Grid.Column="0"/>
               <TextBox Text="{Binding Data.Hint}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4"/>
 
-              <!--Spellbooks-->
-              <TextBlock Text="Spellbooks" HorizontalAlignment="Right" Margin="0,3,5,0" Grid.Row="3" Grid.Column="0"/>
-              <DataGrid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4"
-                        ItemsSource="{Binding Data.SpellbookEntries}" 
-                        FontSize="12" 
-                        CanUserSortColumns="True" 
-                        IsReadOnly="True"
-                        MaxHeight="100"
-                        AutoGenerateColumns="False"
-                        HeadersVisibility="Column"
-                        GridLinesVisibility="Horizontal">
-                <DataGrid.Columns>
-                  <DataGridTextColumn Header="Spellbook" Binding="{Binding SpellbookName}" Width="*" IsReadOnly="True"/>
-                  <DataGridTextColumn Header="Level" Binding="{Binding Level}" Width="60" IsReadOnly="True"/>
-                </DataGrid.Columns>
-              </DataGrid>
-
               <!--Description-->
-              <TextBlock Text="Description" HorizontalAlignment="Right" Margin="0,3,5,0" Grid.Row="4" Grid.Column="0"/>
+              <TextBlock Text="Description" HorizontalAlignment="Right" Margin="0,3,5,0" Grid.Row="3" Grid.Column="0"/>
+
+              <!--Spellbooks-->
+              <ItemsControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="1"
+                           ItemsSource="{Binding Data.SpellbookEntries}" 
+                           FontSize="12" 
+                           Width="120"
+                           Margin="0,25,5,0"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Right">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Grid HorizontalAlignment="Right">
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="20"/>
+                      </Grid.ColumnDefinitions>
+                      <TextBlock Grid.Column="0" Text="{Binding SpellbookName}" FontSize="12" HorizontalAlignment="Right"/>
+                      <TextBlock Grid.Column="1" Text="{Binding Level}" FontSize="12" HorizontalAlignment="Right"/>
+                      <Button Grid.Column="2" Content="?" FontSize="10" Width="16" Height="16" Padding="0" 
+                              Command="{Binding ElementName=page, Path=DataContext.OpenSpellbookCommand}" 
+                              CommandParameter="{Binding}" 
+                              ToolTip.Tip="Open Spellbook"/>
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
               <!--<uc:ResetIsEnabled >-->
-              <uc:TLKTextbox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4" TLKStrings="{Binding Data.Description}" TLKLanguage="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentLanguage}" Gender="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentGender}" AcceptsReturn="True" Height="200" IsReadonly="{Binding Data.IsReadonly}"/>
+              <uc:TLKTextbox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" TLKStrings="{Binding Data.Description}" TLKLanguage="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentLanguage}" Gender="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentGender}" AcceptsReturn="True" Height="200" IsReadonly="{Binding Data.IsReadonly}"/>
               <!--</uc:ResetIsEnabled>-->
 
               <!--AlternativeCastMessage-->
-              <TextBlock Text="Alt. Cast Message" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="5" Grid.Column="0"/>
-              <uc:TLKTextbox TLKStrings="{Binding Data.AlternativeCastMessage}" TLKLanguage="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentLanguage}" Gender="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentGender}" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="4"/>
+              <TextBlock Text="Alt. Cast Message" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="4" Grid.Column="0"/>
+              <uc:TLKTextbox TLKStrings="{Binding Data.AlternativeCastMessage}" TLKLanguage="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentLanguage}" Gender="{Binding Source={x:Static config:EosConfig.RuntimeConfig}, Path=CurrentGender}" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4"/>
 
               <!--Spell Type-->
-              <TextBlock Text="Type" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="6" Grid.Column="0"/>
-              <uc:EnumComboBox ItemsSource="{ext:EnumSource {x:Type types:SpellType}}" SelectedValue="{Binding Data.Type}" Grid.Row="6" Grid.Column="1"/>
+              <TextBlock Text="Type" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="5" Grid.Column="0"/>
+              <uc:EnumComboBox ItemsSource="{ext:EnumSource {x:Type types:SpellType}}" SelectedValue="{Binding Data.Type}" Grid.Row="5" Grid.Column="1"/>
 
-              <TextBlock Text="School" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="6" Grid.Column="2"/>
-              <uc:EnumComboBox ItemsSource="{ext:EnumSource {x:Type types:SpellSchool}}" SelectedValue="{Binding Data.School}" Grid.Row="6" Grid.Column="3"/>
+              <TextBlock Text="School" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="5" Grid.Column="2"/>
+              <uc:EnumComboBox ItemsSource="{ext:EnumSource {x:Type types:SpellSchool}}" SelectedValue="{Binding Data.School}" Grid.Row="5" Grid.Column="3"/>
 
-              <TextBlock Text="AI Category" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="7" Grid.Column="0"/>
-              <uc:EnumComboBox ItemsSource="{ext:EnumSource {x:Type types:AICategory}}" SelectedValue="{Binding Data.Category}" Grid.Row="7" Grid.Column="1" IsNullable="True"/>
+              <TextBlock Text="AI Category" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="6" Grid.Column="0"/>
+              <uc:EnumComboBox ItemsSource="{ext:EnumSource {x:Type types:AICategory}}" SelectedValue="{Binding Data.Category}" Grid.Row="6" Grid.Column="1" IsNullable="True"/>
 
-              <TextBlock Text="Innate Level" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="8" Grid.Column="0"/>
-              <NumericUpDown Value="{Binding Data.InnateLevel}" Grid.Row="8" Grid.Column="1" Increment="1"/>
+              <TextBlock Text="Innate Level" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="7" Grid.Column="0"/>
+              <NumericUpDown Value="{Binding Data.InnateLevel}" Grid.Row="7" Grid.Column="1" Increment="1"/>
 
-              <TextBlock Text="Impact Script" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="7" Grid.Column="2"/>
-              <uc:ScriptResourceTextbox ResRef="{Binding Data.ImpactScript}" Grid.Row="7" Grid.Column="3"/>
+              <TextBlock Text="Impact Script" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="6" Grid.Column="2"/>
+              <uc:ScriptResourceTextbox ResRef="{Binding Data.ImpactScript}" Grid.Row="6" Grid.Column="3"/>
 
-              <TextBlock Text="Range" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="9" Grid.Column="0"/>
-              <uc:EnumComboBox ItemsSource="{ext:EnumSource {x:Type types:SpellRange}}" SelectedValue="{Binding Data.Range}" Grid.Row="9" Grid.Column="1" VerticalAlignment="Top"/>
+              <TextBlock Text="Range" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="8" Grid.Column="0"/>
+              <uc:EnumComboBox ItemsSource="{ext:EnumSource {x:Type types:SpellRange}}" SelectedValue="{Binding Data.Range}" Grid.Row="8" Grid.Column="1" VerticalAlignment="Top"/>
 
-              <TextBlock Text="Components" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="9" Grid.Column="2"/>
-              <uc:FlagListbox ItemsSource="{ext:EnumSource {x:Type types:SpellComponent}}" Flags="{Binding Data.Components}" Orientation="Horizontal" Grid.Row="9" Grid.Column="3"/>
+              <TextBlock Text="Components" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="8" Grid.Column="2"/>
+              <uc:FlagListbox ItemsSource="{ext:EnumSource {x:Type types:SpellComponent}}" Flags="{Binding Data.Components}" Orientation="Horizontal" Grid.Row="8" Grid.Column="3"/>
 
-              <Grid Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2">
+              <Grid Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="120"/>
                   <ColumnDefinition Width="*" MinWidth="150"/>
@@ -159,45 +168,45 @@
                   <RowDefinition Height="25" MinHeight="22"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="Counterspell 1" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="0"/>
-                <uc:SpellComboBox SelectedValue="{Binding Data.CounterSpell1}" Grid.Row="0" Grid.Column="1"/>
+                <TextBlock Text="Counterspell 1" Margin="0,3,0,0" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="0"/>
+                <uc:SpellComboBox Margin="7,0,0,0" SelectedValue="{Binding Data.CounterSpell1}" Grid.Row="0" Grid.Column="1"/>
 
-                <TextBlock Text="Counterspell 2" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="0"/>
-                <uc:SpellComboBox SelectedValue="{Binding Data.CounterSpell2}" Grid.Row="1" Grid.Column="1"/>
+                <TextBlock Text="Counterspell 2" Margin="0,3,0,0" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="0"/>
+                <uc:SpellComboBox Margin="7,0,0,0" SelectedValue="{Binding Data.CounterSpell2}" Grid.Row="1" Grid.Column="1"/>
 
-                <TextBlock Text="Uses Concentration" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="2" Grid.Column="0"/>
-                <CheckBox IsChecked="{Binding Data.UseConcentration}" Grid.Row="2" Grid.Column="1"/>
+                <TextBlock Text="Uses Concentration" Margin="0,3,0,0" HorizontalAlignment="Right" Grid.Row="2" Grid.Column="0"/>
+                <CheckBox Margin="7,0,0,0" IsChecked="{Binding Data.UseConcentration}" Grid.Row="2" Grid.Column="1"/>
 
-                <TextBlock Text="Cast Spontaneously" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="0"/>
-                <CheckBox IsChecked="{Binding Data.IsCastSpontaneously}" Grid.Row="3" Grid.Column="1"/>
+                <TextBlock Text="Cast Spontaneously" Margin="0,3,0,0" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="0"/>
+                <CheckBox Margin="7,0,0,0" IsChecked="{Binding Data.IsCastSpontaneously}" Grid.Row="3" Grid.Column="1"/>
 
-                <TextBlock Text="Is Hostile" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="4" Grid.Column="0"/>
-                <CheckBox IsChecked="{Binding Data.IsHostile}" Grid.Row="4" Grid.Column="1"/>
+                <TextBlock Text="Is Hostile" Margin="0,3,0,0" HorizontalAlignment="Right" Grid.Row="4" Grid.Column="0"/>
+                <CheckBox Margin="7,0,0,0" IsChecked="{Binding Data.IsHostile}" Grid.Row="4" Grid.Column="1"/>
 
-                <TextBlock Text="Target Shape*" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="5" Grid.Column="0" VerticalAlignment="Top"/>
-                <uc:EnumComboBox ItemsSource="{ext:EnumSource {x:Type types:TargetShape}}" SelectedValue="{Binding Data.TargetShape}" Grid.Row="5" Grid.Column="1" IsNullable="True" VerticalAlignment="Top"/>
+                <TextBlock Text="Target Shape*" Margin="0,3,0,0" HorizontalAlignment="Right" Grid.Row="5" Grid.Column="0" VerticalAlignment="Top"/>
+                <uc:EnumComboBox Margin="7,0,0,0" ItemsSource="{ext:EnumSource {x:Type types:TargetShape}}" SelectedValue="{Binding Data.TargetShape}" Grid.Row="5" Grid.Column="1" IsNullable="True" VerticalAlignment="Top"/>
               </Grid>
 
-              <TextBlock Text="Metamagic" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="10" Grid.Column="2"/>
-              <uc:FlagListbox ItemsSource="{ext:EnumSource {x:Type types:MetaMagicType}}" Flags="{Binding Data.AvailableMetaMagic}" Grid.Row="10" Grid.Column="3" VerticalAlignment="Top"/>
+              <TextBlock Text="Metamagic" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="9" Grid.Column="2"/>
+              <uc:FlagListbox ItemsSource="{ext:EnumSource {x:Type types:MetaMagicType}}" Flags="{Binding Data.AvailableMetaMagic}" Grid.Row="9" Grid.Column="3" VerticalAlignment="Top"/>
 
-              <TextBlock Text="Target Width*" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="11" Grid.Column="0"/>
-              <NumericUpDown Value="{Binding Data.TargetSizeX}" Grid.Row="11" Grid.Column="1"/>
+              <TextBlock Text="Target Width*" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="10" Grid.Column="0"/>
+              <NumericUpDown Value="{Binding Data.TargetSizeX}" Grid.Row="10" Grid.Column="1"/>
 
-              <TextBlock Text="Target Height*" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="11" Grid.Column="2"/>
-              <NumericUpDown Value="{Binding Data.TargetSizeY}" Grid.Row="11" Grid.Column="3"/>
+              <TextBlock Text="Target Height*" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="10" Grid.Column="2"/>
+              <NumericUpDown Value="{Binding Data.TargetSizeY}" Grid.Row="10" Grid.Column="3"/>
 
-              <TextBlock Text="Valid Targets" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="12" Grid.Column="0"/>
-              <uc:FlagListbox ItemsSource="{ext:EnumSource {x:Type types:SpellTarget}}" Flags="{Binding Data.TargetTypes}" Grid.Row="12" Grid.Column="1"/>
+              <TextBlock Text="Valid Targets" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="11" Grid.Column="0"/>
+              <uc:FlagListbox ItemsSource="{ext:EnumSource {x:Type types:SpellTarget}}" Flags="{Binding Data.TargetTypes}" Grid.Row="11" Grid.Column="1"/>
 
-              <TextBlock Text="Target Flags*" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="12" Grid.Column="2"/>
-              <uc:FlagListbox ItemsSource="{ext:EnumSource {x:Type types:TargetFlag}}" Flags="{Binding Data.TargetingFlags}" Grid.Row="12" Grid.Column="3" VerticalAlignment="Top"/>
+              <TextBlock Text="Target Flags*" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="11" Grid.Column="2"/>
+              <uc:FlagListbox ItemsSource="{ext:EnumSource {x:Type types:TargetFlag}}" Flags="{Binding Data.TargetingFlags}" Grid.Row="11" Grid.Column="3" VerticalAlignment="Top"/>
 
-              <TextBlock Text="ShapeMastery" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="13" Grid.Column="0"/>
-              <CheckBox IsChecked="{Binding Data.ShapeMastery}" Grid.Row="13" Grid.Column="1"/>
+              <TextBlock Text="ShapeMastery" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="12" Grid.Column="0"/>
+              <CheckBox IsChecked="{Binding Data.ShapeMastery}" Grid.Row="12" Grid.Column="1"/>
 
-              <TextBlock Text="Spell Descriptors" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="13" Grid.Column="2"/>
-              <uc:EnumComboBox ItemsSource="{ext:EnumSource {x:Type types:SpellDescriptors}}" SelectedValue="{Binding Data.SpellDescriptors}" Grid.Row="13" Grid.Column="3" IsNullable="True"/>
+              <TextBlock Text="Spell Descriptors" Margin="0,3,5,0" HorizontalAlignment="Right" Grid.Row="12" Grid.Column="2"/>
+              <uc:EnumComboBox ItemsSource="{ext:EnumSource {x:Type types:SpellDescriptors}}" SelectedValue="{Binding Data.SpellDescriptors}" Grid.Row="12" Grid.Column="3" IsNullable="True"/>
               
             </Grid>
 

@@ -10,6 +10,8 @@ namespace Eos.ViewModels.Base
 {
     public abstract class DataDetailViewModelBase : ViewModelBase
     {
+        private int selectedTabIndex;
+
         protected abstract String GetHeader();
         public abstract object GetDataObject();
 
@@ -20,6 +22,18 @@ namespace Eos.ViewModels.Base
 
         public string Header { get { return GetHeader(); } }
         public ISolidColorBrush EntityColor { get { return GetEntityColor(); } }
-        public int SelectedTabIndex { get; set; }
+        
+        public int SelectedTabIndex 
+        { 
+            get { return selectedTabIndex; }
+            set 
+            { 
+                if (selectedTabIndex != value)
+                {
+                    selectedTabIndex = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
     }
 }
