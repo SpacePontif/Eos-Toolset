@@ -46,12 +46,22 @@ namespace Eos.ViewModels.Dialogs
         {
             if ((model == null) || (MasterRepository.Project.HasOverride(model))) return false;
 
-            int searchNumber = -1;
-            int.TryParse(searchText, out searchNumber);
+            int searchNumber;
+            bool isNumericSearch = int.TryParse(searchText, out searchNumber);
             
             var tlk = model.TlkDisplayName;
-            if (tlk != null) return tlk[MasterRepository.Project.DefaultLanguage].Text.ToLower().Contains(searchText) || (model.CalculatedIndex == searchNumber);
-            return model.GetLabel().ToLower().Contains(searchText) || (model.CalculatedIndex == searchNumber);
+            if (tlk != null)
+            {
+                bool textMatch = tlk[MasterRepository.Project.DefaultLanguage].Text.ToLower().Contains(searchText);
+                bool indexMatch = isNumericSearch && (model.CalculatedIndex == searchNumber);
+                return textMatch || indexMatch;
+            }
+            else
+            {
+                bool textMatch = model.GetLabel().ToLower().Contains(searchText);
+                bool indexMatch = isNumericSearch && (model.CalculatedIndex == searchNumber);
+                return textMatch || indexMatch;
+            }
         }
 
         protected IEnumerable<BaseModel?> Search(String searchText)
