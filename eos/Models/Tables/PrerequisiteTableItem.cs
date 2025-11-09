@@ -53,6 +53,7 @@ namespace Eos.Models.Tables
                     case RequirementType.DIVSPELL:
                     case RequirementType.PANTHEONOR:
                     case RequirementType.DEITYOR:
+                    case RequirementType.DEITYNOT:
                         return Param1Int;
 
                     case RequirementType.CLASSNOT:

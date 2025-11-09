@@ -416,6 +416,7 @@ namespace Eos.Services
                     case RequirementType.DIVSPELL:
                     case RequirementType.PANTHEONOR:
                     case RequirementType.DEITYOR:
+                    case RequirementType.DEITYNOT:
                         tmpItem.Param1Int = preRequTable2da[i].AsInteger("ReqParam1");
                         break;
 

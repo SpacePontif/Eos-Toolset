@@ -33,6 +33,7 @@ namespace Eos.Views
                         case RequirementType.DIVSPELL:
                         case RequirementType.PANTHEONOR:
                         case RequirementType.DEITYOR:
+                        case RequirementType.DEITYNOT:
                             return controlType == "INT";
                         case RequirementType.FEATOR:
                         case RequirementType.FEAT:

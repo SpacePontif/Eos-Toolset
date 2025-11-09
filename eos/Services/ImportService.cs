@@ -602,6 +602,7 @@ namespace Eos.Services
                     case RequirementType.DIVSPELL:
                     case RequirementType.PANTHEONOR:
                     case RequirementType.DEITYOR:
+                    case RequirementType.DEITYNOT:
                         tmpItem.Param1Int = preRequTable2da[i].AsInteger("ReqParam1");
                         break;
 
@@ -885,7 +886,7 @@ namespace Eos.Services
                     tmpFeat.MaxLevel = feat2da[i].AsInteger("MaxLevel");
                     tmpFeat.MinFortitudeSave = feat2da[i].AsInteger("MinFortSave");
                     tmpFeat.RequiresEpic = feat2da[i].AsBoolean("PreReqEpic");
-                    tmpFeat.UseActionQueue = feat2da[i].AsBoolean("ReqAction");
+                    tmpFeat.UseActionQueue = !feat2da[i].IsNull("ReqAction") ? feat2da[i].AsBoolean("ReqAction") : true;
 
                     _importCollection.Feats.Add(tmpFeat);
                 }

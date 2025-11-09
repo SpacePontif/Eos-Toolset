@@ -27,6 +27,7 @@ namespace Eos.Types
         DIVSPELL,
         PANTHEONOR,
         DEITYOR,
+        DEITYNOT,
         SKILLOR,
     }
 }

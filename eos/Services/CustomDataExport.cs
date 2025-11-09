@@ -743,6 +743,10 @@ namespace Eos.Services
                                 case RequirementType.DEITYOR:
                                     rec.Set("LABEL", "Deity");
                                     break;
+                                
+                                case RequirementType.DEITYNOT:
+                                    rec.Set("LABEL", "Deity");
+                                    break;
 
                                 default: 
                                     rec.Set("LABEL", "Label");
@@ -1527,7 +1531,7 @@ namespace Eos.Services
                         record.Set("Constant", GetScriptConstant("FEAT_", feat));
                         record.Set("TOOLSCATEGORIES", (int)feat.ToolsetCategory);
                         record.Set("HostileFeat", feat.OnUseEffect != null ? feat.IsHostile : null);
-                        record.Set("MinLevel", feat.MinLevel > 1 ? feat.MinLevel : null);
+                        record.Set("MinLevel", feat.MinLevel > 0 ? feat.MinLevel : null);
                         record.Set("MinLevelClass", project.Classes.Get2DAIndex(feat.MinLevelClass));
                         record.Set("MaxLevel", feat.MaxLevel > 0 ? feat.MaxLevel : null);
                         record.Set("MinFortSave", feat.MinFortitudeSave > 0 ? feat.MinFortitudeSave : null);
@@ -3581,7 +3585,7 @@ namespace Eos.Services
                         record.Set("SpontaneouslyCast", spell.IsCastSpontaneously);
                         record.Set("AltMessage", GetTLKIndex(spell.AlternativeCastMessage));
                         record.Set("HostileSetting", spell.IsHostile);
-                        if (spell.Type == SpellType.Feat)
+                        if (spell.Type == SpellType.Feat || spell.Type == SpellType.CreaturePower)
                         {
                             if (spell.ParentSpell != null)
                             {
@@ -3589,9 +3593,9 @@ namespace Eos.Services
                                 var subFeatId = GetSubFeatId(spell);
 
                                 record.Set("FeatID", (0x10000 * subFeatId) + project.Feats.Get2DAIndex(parentFeat));
-                                }
-                                else
-                                {
+                            }
+                            else
+                            {
                                 var spellFeat = GetSpellFeat(spell);
                                 if (spellFeat != null)
                                 {
